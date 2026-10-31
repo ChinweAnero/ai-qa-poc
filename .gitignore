@@ -1,0 +1,10 @@
+
+node_modules/
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+playwright/.auth/
+.codex/
+.DS_Store

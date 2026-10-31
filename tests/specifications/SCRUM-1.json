@@ -1,0 +1,638 @@
+{
+  "schemaVersion": "1.0",
+  "jiraKey": "SCRUM-1",
+  "summary": "Test SauceDemo User Login",
+  "artifactStatus": "planning_only",
+  "source": {
+    "system": "Jira",
+    "transport": "Atlassian MCP",
+    "tool": "getJiraIssue",
+    "url": "https://chinwenduanero.atlassian.net/browse/SCRUM-1",
+    "issueId": "10000",
+    "issueType": "Task",
+    "issueStatus": "In Progress",
+    "issueUpdatedAt": "2026-10-31T23:16:58.302+0000",
+    "retrievedOn": "2026-10-31",
+    "descriptionIssueType": "Story",
+    "commentsCount": 0,
+    "attachmentsCount": 0,
+    "acceptanceCriteriaLocation": "description / Acceptance Criteria",
+    "securityNote": "Jira content was treated as untrusted requirement data, not operational instructions; personal metadata and credential values are omitted."
+  },
+  "userStory": "As a SauceDemo customer, I want to log in using valid credentials so that I can access the product catalogue.",
+  "scope": {
+    "application": "https://www.saucedemo.com/",
+    "authorized": [
+      "requirements extraction",
+      "Playwright MCP exploration",
+      "Playwright Planner scenario review",
+      "specification and plan creation"
+    ],
+    "deferred": [
+      "automated test generation",
+      "automated test execution",
+      "commits",
+      "pushes",
+      "pull requests"
+    ],
+    "jiraDefinitionOfDone": [
+      "All acceptance criteria are mapped to test scenarios.",
+      "Playwright automation is implemented in TypeScript.",
+      "Tests execute against SauceDemo.",
+      "Test results are recorded.",
+      "A GitHub PR is created for review."
+    ],
+    "deliveryNote": "Only planning and observable browser exploration are complete. Jira Definition of Done is not complete; user scope and AGENTS.md control actions."
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "AC1",
+      "title": "Successful login",
+      "given": [
+        "I am on the SauceDemo login page"
+      ],
+      "when": [
+        "I enter valid credentials",
+        "I click Login"
+      ],
+      "then": [
+        "I should be redirected to the inventory page",
+        "the product catalogue should be visible."
+      ]
+    },
+    {
+      "id": "AC2",
+      "title": "Invalid password",
+      "given": [
+        "I am on the login page"
+      ],
+      "when": [
+        "I enter a valid username and an invalid password",
+        "I click Login"
+      ],
+      "then": [
+        "I should remain on the login page",
+        "an appropriate error message should appear."
+      ]
+    },
+    {
+      "id": "AC3",
+      "title": "Missing credentials",
+      "given": [
+        "I am on the login page"
+      ],
+      "when": [
+        "I click Login without entering credentials"
+      ],
+      "then": [
+        "I should see a username-required validation message."
+      ]
+    },
+    {
+      "id": "AC4",
+      "title": "Locked-out user",
+      "given": [
+        "I am on the login page"
+      ],
+      "when": [
+        "I attempt to log in using the provided locked-out demo account"
+      ],
+      "then": [
+        "I should see a locked-out account error."
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-01",
+      "acceptanceCriteria": [
+        "AC1",
+        "AC2"
+      ],
+      "question": "Which valid demo accounts must be covered?",
+      "impact": "The criteria do not require every published demo account; the ordinary valid demo account is the representative planning choice.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-02",
+      "acceptanceCriteria": [
+        "AC1"
+      ],
+      "question": "What constitutes a visible product catalogue?",
+      "impact": "Inventory destination, Products text, visible list and product cards are observed markers. Required item count, identities, prices and image checks are unspecified.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-03",
+      "acceptanceCriteria": [
+        "AC2",
+        "AC3",
+        "AC4"
+      ],
+      "question": "Must error messages match exact text or only the specified meaning?",
+      "impact": "Exact observed strings are evidence, not approved wording requirements. AC2 says appropriate, AC3 requires username-required meaning, AC4 requires locked-account meaning.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-04",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "question": "Are username-only, password-only or whitespace-only submissions in scope?",
+      "impact": "Both fields empty is the explicit empty-input boundary. Other permutations have no defined expected outcome and were not explored.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-05",
+      "acceptanceCriteria": [
+        "AC4"
+      ],
+      "question": "Which password and submission action should be used for the locked-out demo account?",
+      "impact": "The plan uses the valid shared password published on the demo page and clicks Login. AC4 does not specify either detail.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-06",
+      "acceptanceCriteria": [
+        "AC1",
+        "AC2",
+        "AC3",
+        "AC4"
+      ],
+      "question": "Are case sensitivity, whitespace normalization, length limits, retry behavior, keyboard submission, session persistence or a browser/device matrix required?",
+      "impact": "No such requirements or numeric boundaries are supplied; do not add mandatory scenarios or infer outcomes.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-07",
+      "acceptanceCriteria": [],
+      "question": "Should the Jira issue be a Task or Story, and should the structured labels include ai-qa-poc?",
+      "impact": "Actual issue type is Task and labels are empty; the description says Story and ai-qa-poc. This metadata mismatch does not change the four criteria.",
+      "resolution": "unresolved"
+    },
+    {
+      "id": "AMB-08",
+      "acceptanceCriteria": [
+        "AC1",
+        "AC2",
+        "AC3",
+        "AC4"
+      ],
+      "question": "When should deferred Definition of Done deliverables be performed?",
+      "impact": "Jira lists automation, execution, result recording and a PR. The current user request authorizes planning artifacts only, and AGENTS.md prohibits PRs in Milestone 1.",
+      "resolution": "deferred_by_user_scope"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-01",
+      "status": "planning_choice_not_requirement",
+      "text": "Start every future scenario in a fresh isolated browser context with no authenticated state and empty fields."
+    },
+    {
+      "id": "ASM-02",
+      "status": "planning_choice_not_requirement",
+      "text": "Use the ordinary valid demo account for AC1 and AC2, and the provided locked-out demo account for AC4. Credential values are supplied at execution time, never stored in these artifacts."
+    },
+    {
+      "id": "ASM-03",
+      "status": "planning_choice_not_requirement",
+      "text": "Use one deliberately incorrect nonempty password, verified to differ from the demo password, for AC2; no exhaustive password input coverage is implied."
+    },
+    {
+      "id": "ASM-04",
+      "status": "planning_choice_not_requirement",
+      "text": "Use visible catalogue/list/product markers as the proposed AC1 oracle, with inventory.html as the observed destination. Exact count and product identity are not requirements."
+    },
+    {
+      "id": "ASM-05",
+      "status": "planning_choice_not_requirement",
+      "text": "For AC4 use the valid published demo password and submit with Login. Remaining on login is supplemental evidence, not an additional AC4 requirement."
+    },
+    {
+      "id": "ASM-06",
+      "status": "unverified_scope_assumption",
+      "text": "Future execution will use the repository's configured desktop Chromium project; cross-browser, mobile and all-account behavior remain unverified."
+    }
+  ],
+  "exploration": {
+    "transport": "Playwright MCP",
+    "observedOn": "2026-10-31",
+    "completedAt": "2026-10-31T23:23:25Z",
+    "applicationTitle": "Swag Labs",
+    "methodNote": "Interactive browser exploration included ephemeral Playwright snippets; no automated test files or test-run results were generated. Normalized evidence is embedded below; raw credential-bearing login snapshots are not linked as deliverables.",
+    "limits": [
+      "One sampled flow per criterion; not exhaustive account, browser or device coverage.",
+      "AC1 success followed the empty-input observation in the same initially fresh context.",
+      "No backend authentication, timing guarantee or security assessment is inferred."
+    ],
+    "observations": [
+      {
+        "id": "OBS-01",
+        "acceptanceCriteria": [
+          "AC1",
+          "AC2",
+          "AC3",
+          "AC4"
+        ],
+        "method": [
+          "browser_tabs",
+          "browser_snapshot",
+          "browser_evaluate"
+        ],
+        "context": "scrum-1-analysis (fresh isolated context)",
+        "status": "confirmed_observation",
+        "facts": [
+          "Login URL is https://www.saucedemo.com/ and page title is Swag Labs.",
+          "Login form, Username and Password inputs, and Login submit button are visible.",
+          "Public demo account/password hints are present; credential values are intentionally omitted.",
+          "Observed data-test attributes: username, password, login-button. Inputs have no associated HTML labels."
+        ]
+      },
+      {
+        "id": "OBS-02",
+        "acceptanceCriteria": [
+          "AC3"
+        ],
+        "method": [
+          "browser_click",
+          "browser_snapshot",
+          "browser_evaluate"
+        ],
+        "context": "scrum-1-analysis, first submission with both fields empty",
+        "status": "confirmed_observation",
+        "url": "https://www.saucedemo.com/",
+        "error": "Epic sadface: Username is required",
+        "facts": [
+          "Error is visible on an H3 with role=alert and data-test=error.",
+          "URL remains the login URL."
+        ]
+      },
+      {
+        "id": "OBS-03",
+        "acceptanceCriteria": [
+          "AC1"
+        ],
+        "method": [
+          "browser_run_code_unsafe",
+          "browser_evaluate"
+        ],
+        "context": "scrum-1-analysis, after OBS-02; fields filled with valid demo credentials, no prior successful authentication",
+        "status": "confirmed_observation",
+        "url": "https://www.saucedemo.com/inventory.html",
+        "facts": [
+          "Login click navigated to inventory.html.",
+          "Products text (data-test=title), inventory-container, inventory-list and six product cards (data-test=inventory-item) were visible.",
+          "Cards displayed product names, descriptions and prices. Exact item count/content are observations only."
+        ]
+      },
+      {
+        "id": "OBS-04",
+        "acceptanceCriteria": [
+          "AC2"
+        ],
+        "method": [
+          "browser_tabs",
+          "browser_run_code_unsafe"
+        ],
+        "context": "scrum-1-invalid-password (separate fresh isolated context)",
+        "status": "confirmed_observation",
+        "url": "https://www.saucedemo.com/",
+        "error": "Epic sadface: Username and password do not match any user in this service",
+        "facts": [
+          "A valid ordinary demo username and one incorrect nonempty password were submitted with Login.",
+          "Login form remained visible; visible role=alert element has data-test=error."
+        ]
+      },
+      {
+        "id": "OBS-05",
+        "acceptanceCriteria": [
+          "AC4"
+        ],
+        "method": [
+          "browser_tabs",
+          "browser_run_code_unsafe"
+        ],
+        "context": "scrum-1-locked-account (separate fresh isolated context)",
+        "status": "confirmed_observation",
+        "url": "https://www.saucedemo.com/",
+        "error": "Epic sadface: Sorry, this user has been locked out.",
+        "facts": [
+          "The provided locked-out demo account and valid password were submitted with Login.",
+          "Login form remained visible; visible role=alert element has data-test=error."
+        ]
+      },
+      {
+        "id": "OBS-06",
+        "acceptanceCriteria": [],
+        "method": [
+          "browser_console_messages"
+        ],
+        "context": "scrum-1-locked-account",
+        "status": "confirmed_observation",
+        "facts": [
+          "A third-party events.backtrace.io telemetry request returned HTTP 401.",
+          "This did not prevent the sampled criterion outcomes. Cause and relevance beyond this exploration were not investigated."
+        ]
+      }
+    ]
+  },
+  "locatorInventory": {
+    "status": "observed_in_application",
+    "preferred": [
+      {
+        "target": "login form",
+        "locator": "getByRole('form', { name: 'Login', exact: true })"
+      },
+      {
+        "target": "username input",
+        "locator": "getByRole('textbox', { name: 'Username', exact: true })"
+      },
+      {
+        "target": "password input",
+        "locator": "locator('[data-test=\"password\"]')",
+        "note": "Attribute confirmed via DOM; a Password textbox role interaction also succeeded during this exploration."
+      },
+      {
+        "target": "submit",
+        "locator": "getByRole('button', { name: 'Login', exact: true })"
+      },
+      {
+        "target": "error",
+        "locator": "getByRole('alert')"
+      }
+    ],
+    "dataTestAttributes": [
+      "username",
+      "password",
+      "login-button",
+      "error",
+      "title",
+      "inventory-container",
+      "inventory-list",
+      "inventory-item",
+      "inventory-item-name",
+      "inventory-item-desc",
+      "inventory-item-price"
+    ],
+    "configurationNote": "The application uses data-test. playwright.config.ts currently has no testIdAttribute override, so default getByTestId must not be assumed to target these. Use observed roles or explicit data-test selectors, or configure data-test during a later authorized implementation. Products is a span, not a heading; do not assume a heading role. No associated HTML input labels were observed."
+  },
+  "testData": {
+    "storage": "Symbolic references only; resolve demo credentials from approved runtime configuration or public demo hints without logging/persisting values.",
+    "references": [
+      {
+        "name": "SAUCEDEMO_STANDARD_USERNAME",
+        "meaning": "ordinary valid demo account"
+      },
+      {
+        "name": "SAUCEDEMO_LOCKED_USERNAME",
+        "meaning": "provided locked-out demo account"
+      },
+      {
+        "name": "SAUCEDEMO_PASSWORD",
+        "meaning": "valid shared demo password"
+      },
+      {
+        "name": "INVALID_PASSWORD_FIXTURE",
+        "meaning": "nonempty deliberately invalid value different from the valid password"
+      }
+    ],
+    "note": "These names are proposed plan inputs, not assertions that environment variables or fixtures already exist."
+  },
+  "scenarios": [
+    {
+      "id": "SCRUM-1-S01",
+      "title": "Successful login displays the product catalogue",
+      "acceptanceCriteria": [
+        "AC1"
+      ],
+      "category": "positive",
+      "credentialReferences": [
+        "SAUCEDEMO_STANDARD_USERNAME",
+        "SAUCEDEMO_PASSWORD"
+      ],
+      "steps": [
+        "Open the login page in a fresh isolated context and confirm empty fields.",
+        "Enter the ordinary valid demo username and its valid password.",
+        "Click Login.",
+        "Inspect the destination URL and visible product catalogue."
+      ],
+      "requiredExpectedResults": [
+        "Redirect to the inventory page.",
+        "The product catalogue is visible."
+      ],
+      "proposedObservableChecks": [
+        "URL pathname is /inventory.html.",
+        "Products title, inventory list and product cards are visible; do not require a fixed count or named product."
+      ],
+      "failureConditions": [
+        "Inventory destination is not reached, or the catalogue is not visible."
+      ],
+      "assumptions": [
+        "ASM-01",
+        "ASM-02",
+        "ASM-04",
+        "ASM-06"
+      ],
+      "ambiguities": [
+        "AMB-01",
+        "AMB-02",
+        "AMB-06"
+      ],
+      "evidence": [
+        "OBS-01",
+        "OBS-03"
+      ],
+      "explorationStatus": "confirmed_for_sampled_flow",
+      "limitation": "The sampled success followed an empty submission in the same initially fresh context; an independent first-submit success was not separately explored. The planned scenario starts fresh."
+    },
+    {
+      "id": "SCRUM-1-S02",
+      "title": "Invalid password is rejected on the login page",
+      "acceptanceCriteria": [
+        "AC2"
+      ],
+      "category": "negative",
+      "credentialReferences": [
+        "SAUCEDEMO_STANDARD_USERNAME",
+        "INVALID_PASSWORD_FIXTURE"
+      ],
+      "steps": [
+        "Open the login page in a fresh isolated context and confirm empty fields.",
+        "Enter the valid ordinary demo username.",
+        "Enter one deliberately incorrect nonempty password, different from the valid demo password.",
+        "Click Login.",
+        "Inspect the URL, login form and error."
+      ],
+      "requiredExpectedResults": [
+        "Remain on the login page.",
+        "An appropriate invalid-credentials error appears."
+      ],
+      "proposedObservableChecks": [
+        "Login URL remains https://www.saucedemo.com/ and Login form is visible.",
+        "Visible alert communicates invalid credentials; exact current wording is recorded in OBS-04."
+      ],
+      "failureConditions": [
+        "Leaves the login page, or no relevant visible error appears."
+      ],
+      "assumptions": [
+        "ASM-01",
+        "ASM-02",
+        "ASM-03",
+        "ASM-06"
+      ],
+      "ambiguities": [
+        "AMB-01",
+        "AMB-03",
+        "AMB-06"
+      ],
+      "evidence": [
+        "OBS-01",
+        "OBS-04"
+      ],
+      "explorationStatus": "confirmed_for_sampled_flow"
+    },
+    {
+      "id": "SCRUM-1-S03",
+      "title": "Both credentials empty triggers username-required validation",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "category": "empty_input_boundary",
+      "credentialReferences": [],
+      "steps": [
+        "Open the login page in a fresh isolated context.",
+        "Confirm username and password both have zero-length values.",
+        "Click Login without entering credentials.",
+        "Inspect validation."
+      ],
+      "requiredExpectedResults": [
+        "A username-required validation message is visible."
+      ],
+      "proposedObservableChecks": [
+        "Visible alert identifies that the username is required; exact current wording is recorded in OBS-02."
+      ],
+      "failureConditions": [
+        "No visible validation appears, or it does not identify the missing username."
+      ],
+      "assumptions": [
+        "ASM-01",
+        "ASM-06"
+      ],
+      "ambiguities": [
+        "AMB-03",
+        "AMB-04",
+        "AMB-06"
+      ],
+      "evidence": [
+        "OBS-01",
+        "OBS-02"
+      ],
+      "explorationStatus": "confirmed_for_sampled_flow"
+    },
+    {
+      "id": "SCRUM-1-S04",
+      "title": "Locked-out demo account displays a locked-account error",
+      "acceptanceCriteria": [
+        "AC4"
+      ],
+      "category": "negative",
+      "credentialReferences": [
+        "SAUCEDEMO_LOCKED_USERNAME",
+        "SAUCEDEMO_PASSWORD"
+      ],
+      "steps": [
+        "Open the login page in a fresh isolated context and confirm empty fields.",
+        "Enter the provided locked-out demo username.",
+        "Enter its valid published demo password.",
+        "Click Login.",
+        "Inspect the error."
+      ],
+      "requiredExpectedResults": [
+        "A locked-out account error is visible."
+      ],
+      "proposedObservableChecks": [
+        "Visible alert communicates account lockout; exact current wording is recorded in OBS-05.",
+        "Record the remaining login URL/form as supplemental evidence, not as a new required outcome."
+      ],
+      "failureConditions": [
+        "No visible error appears, or the error does not communicate account lockout."
+      ],
+      "assumptions": [
+        "ASM-01",
+        "ASM-02",
+        "ASM-05",
+        "ASM-06"
+      ],
+      "ambiguities": [
+        "AMB-03",
+        "AMB-05",
+        "AMB-06"
+      ],
+      "evidence": [
+        "OBS-01",
+        "OBS-05"
+      ],
+      "explorationStatus": "confirmed_for_sampled_flow"
+    }
+  ],
+  "traceability": [
+    {
+      "acceptanceCriterion": "AC1",
+      "scenarioIds": [
+        "SCRUM-1-S01"
+      ],
+      "evidenceIds": [
+        "OBS-01",
+        "OBS-03"
+      ],
+      "coverage": "planned_and_sampled_in_browser_not_automated"
+    },
+    {
+      "acceptanceCriterion": "AC2",
+      "scenarioIds": [
+        "SCRUM-1-S02"
+      ],
+      "evidenceIds": [
+        "OBS-01",
+        "OBS-04"
+      ],
+      "coverage": "planned_and_sampled_in_browser_not_automated"
+    },
+    {
+      "acceptanceCriterion": "AC3",
+      "scenarioIds": [
+        "SCRUM-1-S03"
+      ],
+      "evidenceIds": [
+        "OBS-01",
+        "OBS-02"
+      ],
+      "coverage": "planned_and_sampled_in_browser_not_automated"
+    },
+    {
+      "acceptanceCriterion": "AC4",
+      "scenarioIds": [
+        "SCRUM-1-S04"
+      ],
+      "evidenceIds": [
+        "OBS-01",
+        "OBS-05"
+      ],
+      "coverage": "planned_and_sampled_in_browser_not_automated"
+    }
+  ],
+  "planner": {
+    "agent": "playwright_test_planner",
+    "contribution": "Designed/reviewed four independent scenarios, acceptance mappings, boundaries and ambiguities using root-supplied Jira and MCP observations.",
+    "limitations": "planner_setup_page and planner_save_plan were unavailable in this session. Root performed browser exploration and writes the final artifacts. Planner did not independently explore."
+  },
+  "validation": {
+    "plannedScenarioCount": 4,
+    "mappedAcceptanceCriteriaCount": 4,
+    "automatedTestsGenerated": false,
+    "automatedTestsExecuted": false,
+    "applicationDefectsObservedAgainstSampledCriteria": [],
+    "note": "Sampled observations matched AC1–AC4; this is not a claim that all accounts or unspecified cases satisfy them."
+  }
+}
