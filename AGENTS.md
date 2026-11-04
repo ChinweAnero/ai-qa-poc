@@ -72,3 +72,21 @@ Before generating Playwright tests:
 
 Never proceed to test code generation when the
 specification is blocked.
+
+
+## Milestone 3 — Playwright Test Generation
+
+Before generating tests:
+
+1. Read agents/test-generator.md.
+2. Validate the Jira test specification.
+3. Use the official Playwright Planner agent.
+4. Use the official Playwright Generator agent.
+5. Run the generated tests.
+6. Use the official Healer agent when appropriate.
+7. Record execution evidence and unresolved failures.
+
+Do not weaken assertions, skip failing tests or
+change acceptance criteria to force passing results.
+
+Keep all generated test code in tests/e2e/.
