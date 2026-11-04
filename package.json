@@ -6,7 +6,10 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate:spec": "tsx orchestrator/validate-spec.ts",
+    "generate:plan": "tsx orchestrator/generate-test-plan.ts",
+    "test:unit": "tsx --test tests/*.test.ts"
   },
   "keywords": [],
   "author": "",

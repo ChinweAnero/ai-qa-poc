@@ -56,3 +56,19 @@ https://www.saucedemo.com/
 ## Outputs
 - tests/specifications/<JIRA-KEY>.json
 - tests/plans/<JIRA-KEY>.md
+
+
+## Requirements Analyst — Milestone 2
+
+Before generating Playwright tests:
+
+1. Read agents/requirements-analyst.md.
+2. Retrieve the Jira issue using Atlassian MCP.
+3. Produce a structured JSON test specification.
+4. Run the TypeScript specification validator.
+5. Resolve validation errors without inventing
+   requirements or expected behaviour.
+6. Report missing acceptance criteria as blockers.
+
+Never proceed to test code generation when the
+specification is blocked.

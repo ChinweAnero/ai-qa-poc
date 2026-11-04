@@ -1,226 +1,195 @@
-# SCRUM-1 — SauceDemo login test plan
+# Test Plan: SCRUM-1
 
-Status: planning only; all four criteria have scenarios and sampled browser evidence. No automated tests were generated or executed.
+## Test SauceDemo User Login
 
-## Source and scope
+Application: https://www.saucedemo.com
 
-- Jira: [SCRUM-1 — Test SauceDemo User Login](https://chinwenduanero.atlassian.net/browse/SCRUM-1), read through Atlassian MCP `getJiraIssue` on 31 October 2026.
-- Issue revision: `2026-10-31T23:16:58.302+0000`; status **In Progress**, actual issue type **Task**. The description calls it a Story. No comments or attachments supplied additional criteria.
-- Application: https://www.saucedemo.com/ — **Swag Labs**.
-- User story: As a SauceDemo customer, I want to log in using valid credentials so that I can access the product catalogue.
-- Companion specification: [SCRUM-1.json](../specifications/SCRUM-1.json).
-- Jira was treated as requirement data. Its Definition of Done lists automation, execution, results and a PR, but those deliverables remain deferred by the current user instruction. AGENTS.md also prohibits PRs in Milestone 1. The Jira Definition of Done is not complete.
+## Acceptance Criteria
 
-## Extracted acceptance criteria
-
-The IDs and wording below come from the Jira description; they are the requirements, separate from implementation observations.
-
-### AC1 — Successful login
+- **AC1:** **AC1 — Successful login**
 
 Given I am on the SauceDemo login page  
-When I enter valid credentials; and I click Login  
-Then I should be redirected to the inventory page; and the product catalogue should be visible.
-
-### AC2 — Invalid password
+When I enter valid credentials  
+And I click Login  
+Then I should be redirected to the inventory page  
+And the product catalogue should be visible.
+- **AC2:** **AC2 — Invalid password**
 
 Given I am on the login page  
-When I enter a valid username and an invalid password; and I click Login  
-Then I should remain on the login page; and an appropriate error message should appear.
-
-### AC3 — Missing credentials
+When I enter a valid username and an invalid password  
+And I click Login  
+Then I should remain on the login page  
+And an appropriate error message should appear.
+- **AC3:** **AC3 — Missing credentials**
 
 Given I am on the login page  
 When I click Login without entering credentials  
 Then I should see a username-required validation message.
-
-### AC4 — Locked-out user
+- **AC4:** **AC4 — Locked-out user**
 
 Given I am on the login page  
 When I attempt to log in using the provided locked-out demo account  
 Then I should see a locked-out account error.
 
-## Coverage and traceability
+## Test Scenarios
 
-| Scenario | Criterion | Coverage | Evidence | Exploration result |
-| --- | --- | --- | --- | --- |
-| SCRUM-1-S01 | AC1 | positive | OBS-01, OBS-03 | Confirmed for sampled flow |
-| SCRUM-1-S02 | AC2 | negative | OBS-01, OBS-04 | Confirmed for sampled flow |
-| SCRUM-1-S03 | AC3 | empty input boundary | OBS-01, OBS-02 | Confirmed for sampled flow |
-| SCRUM-1-S04 | AC4 | negative | OBS-01, OBS-05 | Confirmed for sampled flow |
+### SCRUM-1-S01: Successful login displays the product catalogue
 
-This is four planned scenarios covering four criteria. Browser exploration is not an automated test run. No required numeric input boundaries were supplied; both inputs empty is the explicit zero-length boundary in AC3.
+- Type: positive
+- Source: acceptance_criteria
+- ACs: AC1
+- Priority: high
 
-## Starting state and test data
+**Preconditions**
+- The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.
+- A requirement-approved valid account and its valid credentials are available; the account identity and required account coverage need confirmation. Credential values must not be stored in this specification.
 
-Each planned scenario starts independently in a fresh isolated browser context at the login URL, with no authenticated state and both fields empty. Scenarios can run in any order. This isolation is a planning choice (**ASM-01**).
+**Steps**
+1. Enter valid credentials.
+2. Click Login.
+3. Check the destination and whether the product catalogue is visible.
 
-Use symbolic inputs below. Resolve credential values from approved runtime configuration or the public demo hints without logging or persisting them. No credential values are included here or in the JSON. These names are proposed inputs, not claims that matching environment variables or reusable fixtures already exist.
+**Expected result:** I should be redirected to the inventory page and the product catalogue should be visible.
 
-| Reference | Meaning |
-| --- | --- |
-| `SAUCEDEMO_STANDARD_USERNAME` | ordinary valid demo account |
-| `SAUCEDEMO_LOCKED_USERNAME` | provided locked-out demo account |
-| `SAUCEDEMO_PASSWORD` | valid shared demo password |
-| `INVALID_PASSWORD_FIXTURE` | nonempty deliberately invalid value different from the valid password |
+### SCRUM-1-S02: Invalid password is rejected on the login page
 
-The repository currently contains only the placeholder `tests/e2e/seed.spec.ts`, with no reusable login fixtures/helpers found. Its existing Playwright configuration targets desktop Chromium; browser/device breadth remains unspecified and unverified.
+- Type: negative
+- Source: acceptance_criteria
+- ACs: AC2
+- Priority: high
 
-## Detailed scenarios
+**Preconditions**
+- The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.
+- A valid username and a deliberately invalid password are available without persisting their values.
 
-### SCRUM-1-S01 — Successful login displays the product catalogue
+**Steps**
+1. Enter a valid username and an invalid password.
+2. Click Login.
+3. Check whether the login page remains displayed and inspect the error message.
 
-- Acceptance criterion: **AC1**
-- Coverage: positive
-- Preconditions: fresh isolated login page and empty fields; test data: `SAUCEDEMO_STANDARD_USERNAME`, `SAUCEDEMO_PASSWORD`.
-- Planning assumptions: ASM-01, ASM-02, ASM-04, ASM-06. Open ambiguities: AMB-01, AMB-02, AMB-06.
+**Expected result:** I should remain on the login page and an appropriate error message should appear. The meaning of an appropriate error needs clarification; no exact wording is prescribed.
 
-1. Open the login page in a fresh isolated context and confirm empty fields.
-2. Enter the ordinary valid demo username and its valid password.
-3. Click Login.
-4. Inspect the destination URL and visible product catalogue.
+### SCRUM-1-S03: Both credentials empty triggers username-required validation
 
-**Required outcome / success criteria:** Redirect to the inventory page. The product catalogue is visible.
+- Type: boundary
+- Source: acceptance_criteria
+- ACs: AC3
+- Priority: high
 
-**Proposed observable checks:** URL pathname is /inventory.html. Products title, inventory list and product cards are visible; do not require a fixed count or named product.
+**Preconditions**
+- The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.
+- Both username and password fields are empty, with zero characters in each.
 
-**Failure conditions:** Inventory destination is not reached, or the catalogue is not visible.
+**Steps**
+1. Click Login without entering credentials.
+2. Inspect the validation message.
 
-**Confirmed evidence:** OBS-01, OBS-03. The sampled success followed an empty submission in the same initially fresh context; an independent first-submit success was not separately explored. The planned scenario starts fresh.
+**Expected result:** I should see a username-required validation message.
 
-### SCRUM-1-S02 — Invalid password is rejected on the login page
+### SCRUM-1-S04: Locked-out demo account displays a locked-account error
 
-- Acceptance criterion: **AC2**
-- Coverage: negative
-- Preconditions: fresh isolated login page and empty fields; test data: `SAUCEDEMO_STANDARD_USERNAME`, `INVALID_PASSWORD_FIXTURE`.
-- Planning assumptions: ASM-01, ASM-02, ASM-03, ASM-06. Open ambiguities: AMB-01, AMB-03, AMB-06.
+- Type: negative
+- Source: acceptance_criteria
+- ACs: AC4
+- Priority: high
 
-1. Open the login page in a fresh isolated context and confirm empty fields.
-2. Enter the valid ordinary demo username.
-3. Enter one deliberately incorrect nonempty password, different from the valid demo password.
-4. Click Login.
-5. Inspect the URL, login form and error.
+**Preconditions**
+- The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.
+- The provided locked-out demo account and the credentials needed to attempt login have been identified and confirmed; those details are not supplied in SCRUM-1.
 
-**Required outcome / success criteria:** Remain on the login page. An appropriate invalid-credentials error appears.
+**Steps**
+1. Attempt to log in using the provided locked-out demo account, with credential and submission details to be confirmed before execution.
+2. Inspect the resulting error.
 
-**Proposed observable checks:** Login URL remains https://www.saucedemo.com/ and Login form is visible. Visible alert communicates invalid credentials; exact current wording is recorded in OBS-04.
+**Expected result:** I should see a locked-out account error.
 
-**Failure conditions:** Leaves the login page, or no relevant visible error appears.
+### SCRUM-1-P01: Proposed: submit a valid username with an empty password
 
-**Confirmed evidence:** OBS-01, OBS-04. The sampled flow matched the required outcome.
+- Type: boundary
+- Source: proposed
+- ACs: AC3
+- Priority: medium
 
-### SCRUM-1-S03 — Both credentials empty triggers username-required validation
+**Preconditions**
+- The SauceDemo login page is open with no authenticated session.
+- A valid username is available and the password field is empty.
 
-- Acceptance criterion: **AC3**
-- Coverage: empty input boundary
-- Preconditions: fresh isolated login page and empty fields; test data: none.
-- Planning assumptions: ASM-01, ASM-06. Open ambiguities: AMB-03, AMB-04, AMB-06.
+**Steps**
+1. Enter the valid username and leave the password at zero characters.
+2. Click Login.
+3. Record the displayed response and destination for requirements clarification.
 
-1. Open the login page in a fresh isolated context.
-2. Confirm username and password both have zero-length values.
-3. Click Login without entering credentials.
-4. Inspect validation.
+**Expected result:** Unspecified: AC3 defines the result only when no credentials are entered. Record observations without assigning a pass/fail outcome until the password-only omission requirement is supplied.
 
-**Required outcome / success criteria:** A username-required validation message is visible.
+### SCRUM-1-P02: Proposed: submit a password with an empty username
 
-**Proposed observable checks:** Visible alert identifies that the username is required; exact current wording is recorded in OBS-02.
+- Type: boundary
+- Source: proposed
+- ACs: AC3
+- Priority: medium
 
-**Failure conditions:** No visible validation appears, or it does not identify the missing username.
+**Preconditions**
+- The SauceDemo login page is open with no authenticated session.
+- A demo password is available and the username field is empty.
 
-**Confirmed evidence:** OBS-01, OBS-02. The sampled flow matched the required outcome.
+**Steps**
+1. Enter the password and leave the username at zero characters.
+2. Click Login.
+3. Record the displayed response and destination for requirements clarification.
 
-### SCRUM-1-S04 — Locked-out demo account displays a locked-account error
+**Expected result:** Unspecified: AC3 does not define the result when only the username is missing. Record observations without assuming that the both-empty validation also applies here.
 
-- Acceptance criterion: **AC4**
-- Coverage: negative
-- Preconditions: fresh isolated login page and empty fields; test data: `SAUCEDEMO_LOCKED_USERNAME`, `SAUCEDEMO_PASSWORD`.
-- Planning assumptions: ASM-01, ASM-02, ASM-05, ASM-06. Open ambiguities: AMB-03, AMB-05, AMB-06.
+### SCRUM-1-P03: Proposed: submit whitespace-only credential fields
 
-1. Open the login page in a fresh isolated context and confirm empty fields.
-2. Enter the provided locked-out demo username.
-3. Enter its valid published demo password.
-4. Click Login.
-5. Inspect the error.
+- Type: edge
+- Source: proposed
+- ACs: AC3
+- Priority: low
 
-**Required outcome / success criteria:** A locked-out account error is visible.
+**Preconditions**
+- The SauceDemo login page is open with no authenticated session.
+- Whitespace handling has not been specified.
 
-**Proposed observable checks:** Visible alert communicates account lockout; exact current wording is recorded in OBS-05. Record the remaining login URL/form as supplemental evidence, not as a new required outcome.
+**Steps**
+1. Enter one space in each credential field.
+2. Click Login.
+3. Record the displayed response and destination for requirements clarification.
 
-**Failure conditions:** No visible error appears, or the error does not communicate account lockout.
+**Expected result:** Unspecified: the requirements do not say whether whitespace is trimmed, treated as missing credentials, or processed as entered. Observe the response without assuming a required error or normalization rule.
 
-**Confirmed evidence:** OBS-01, OBS-05. The sampled flow matched the required outcome.
+### SCRUM-1-P04: Proposed: correct an invalid password and retry login
 
-## Confirmed browser observations
+- Type: edge
+- Source: proposed
+- ACs: AC1, AC2
+- Priority: medium
 
-Explored with Playwright MCP on **31 October 2026**, completed by **23:23:25 UTC**. The following normalized evidence is embedded in the JSON as well; it does not depend on local raw snapshots that contain public demo credential hints.
+**Preconditions**
+- The SauceDemo login page is open with no authenticated session.
+- A valid account, its valid credentials, and a deliberately invalid password are available without persisting their values.
 
-| Evidence | Action/context | Confirmed observation |
-| --- | --- | --- |
-| OBS-01 | Opened login in isolated context `scrum-1-analysis`; accessibility snapshot and DOM attribute inspection | Login form, Username and Password inputs and Login button present at the root URL. Public demo hints present. Inputs use `data-test` and have no associated HTML labels. |
-| OBS-02 | First submission in that context, both fields empty | Visible username-required alert; remained on root login URL. |
-| OBS-03 | Entered valid ordinary demo credentials after OBS-02 and clicked Login | Reached `https://www.saucedemo.com/inventory.html`; Products text, catalogue list and six cards were visible, with names/descriptions/prices. This was not a separately sampled first-submit success in a fresh context. |
-| OBS-04 | Separate fresh context `scrum-1-invalid-password`; valid ordinary username + one incorrect nonempty password, then Login | Root login URL and form remained visible; visible invalid-credentials alert. |
-| OBS-05 | Separate fresh context `scrum-1-locked-account`; provided locked-out account + valid demo password, then Login | Visible locked-account alert; root login URL and form also remained visible. Remaining on login is supplemental evidence beyond AC4's explicit requirement. |
-| OBS-06 | Console inspection in locked-account context | Third-party `events.backtrace.io` telemetry request returned HTTP 401. It did not prevent the sampled login outcomes; cause was not investigated. |
+**Steps**
+1. Enter the valid username and invalid password, then click Login.
+2. Record the error and destination.
+3. On the login page, replace the invalid password with the valid password and click Login again.
+4. Record the destination, catalogue visibility, and handling of the prior error.
 
-Exact strings below are **observed implementation wording**, not additional approved acceptance criteria:
+**Expected result:** Exploratory sequence only: AC2 specifies remaining on the login page with an appropriate error for the invalid attempt; AC1 specifies inventory redirection and a visible product catalogue for valid credentials. Whether retrying in the same session is supported and how the previous error is handled are unspecified. Record observations without assigning a pass/fail outcome to these unspecified behaviors.
 
-| Criterion | Visible alert text |
-| --- | --- |
-| AC2 | Epic sadface: Username and password do not match any user in this service |
-| AC3 | Epic sadface: Username is required |
-| AC4 | Epic sadface: Sorry, this user has been locked out. |
+### SCRUM-1-P05: Proposed: attempt login with keyboard submission
 
-The error element was an H3 with `role="alert"` and `data-test="error"`. Semantic error assertions are proposed until the exact-copy question is resolved. Six cards and particular products/prices are observations only. No mandatory count, product identity or price check is inferred from AC1.
+- Type: edge
+- Source: proposed
+- ACs: AC1
+- Priority: low
 
-No mismatch against AC1–AC4 was observed in these samples. This does not establish all-account, cross-browser, backend, timing or security behavior.
+**Preconditions**
+- The SauceDemo login page is open with no authenticated session.
+- Valid credentials are available; keyboard submission behavior is not specified.
 
-## Observed locator guidance for later implementation
+**Steps**
+1. Enter valid credentials.
+2. With focus in the password field, press Enter.
+3. Record whether submission occurs and the resulting destination and visible content.
 
-These locators/attributes were discovered in the real application, not guessed. No test implementation is included.
-
-| Element | Recommended locator |
-| --- | --- |
-| Login form | `getByRole('form', { name: 'Login', exact: true })` |
-| Username | `getByRole('textbox', { name: 'Username', exact: true })` |
-| Password | `locator('[data-test="password"]')` |
-| Login | `getByRole('button', { name: 'Login', exact: true })` |
-| Error | `getByRole('alert')` or `locator('[data-test="error"]')` |
-| Products title | `locator('[data-test="title"]')` with observed text Products |
-| Catalogue | `locator('[data-test="inventory-list"]')` |
-| Product cards | `locator('[data-test="inventory-item"]')` |
-
-Username, password and submit attributes are `data-test="username"`, `data-test="password"` and `data-test="login-button"`. A Password textbox role interaction also succeeded in this session; the explicit attribute locator remains the recommendation. Products is a span, so a heading role must not be assumed. No associated HTML labels were found.
-
-The repository has no `testIdAttribute` override. Playwright's default `getByTestId` must not be assumed to target this application's `data-test` attributes. Use the verified roles or explicit selectors; configuring `data-test` is a later implementation choice.
-
-## Planning assumptions and choices
-
-- **ASM-01** (planning choice not requirement): Start every future scenario in a fresh isolated browser context with no authenticated state and empty fields.
-- **ASM-02** (planning choice not requirement): Use the ordinary valid demo account for AC1 and AC2, and the provided locked-out demo account for AC4. Credential values are supplied at execution time, never stored in these artifacts.
-- **ASM-03** (planning choice not requirement): Use one deliberately incorrect nonempty password, verified to differ from the demo password, for AC2; no exhaustive password input coverage is implied.
-- **ASM-04** (planning choice not requirement): Use visible catalogue/list/product markers as the proposed AC1 oracle, with inventory.html as the observed destination. Exact count and product identity are not requirements.
-- **ASM-05** (planning choice not requirement): For AC4 use the valid published demo password and submit with Login. Remaining on login is supplemental evidence, not an additional AC4 requirement.
-- **ASM-06** (unverified scope assumption): Future execution will use the repository's configured desktop Chromium project; cross-browser, mobile and all-account behavior remain unverified.
-
-## Ambiguities and pending clarification
-
-| ID | Related criteria | Question / gap | Planning impact |
-| --- | --- | --- | --- |
-| AMB-01 | AC1, AC2 | Which valid demo accounts must be covered? | The criteria do not require every published demo account; the ordinary valid demo account is the representative planning choice. |
-| AMB-02 | AC1 | What constitutes a visible product catalogue? | Inventory destination, Products text, visible list and product cards are observed markers. Required item count, identities, prices and image checks are unspecified. |
-| AMB-03 | AC2, AC3, AC4 | Must error messages match exact text or only the specified meaning? | Exact observed strings are evidence, not approved wording requirements. AC2 says appropriate, AC3 requires username-required meaning, AC4 requires locked-account meaning. |
-| AMB-04 | AC3 | Are username-only, password-only or whitespace-only submissions in scope? | Both fields empty is the explicit empty-input boundary. Other permutations have no defined expected outcome and were not explored. |
-| AMB-05 | AC4 | Which password and submission action should be used for the locked-out demo account? | The plan uses the valid shared password published on the demo page and clicks Login. AC4 does not specify either detail. |
-| AMB-06 | AC1, AC2, AC3, AC4 | Are case sensitivity, whitespace normalization, length limits, retry behavior, keyboard submission, session persistence or a browser/device matrix required? | No such requirements or numeric boundaries are supplied; do not add mandatory scenarios or infer outcomes. |
-| AMB-07 | Issue metadata | Should the Jira issue be a Task or Story, and should the structured labels include ai-qa-poc? | Actual issue type is Task and labels are empty; the description says Story and ai-qa-poc. This metadata mismatch does not change the four criteria. |
-| AMB-08 | AC1, AC2, AC3, AC4 | When should deferred Definition of Done deliverables be performed? | Jira lists automation, execution, result recording and a PR. The current user request authorizes planning artifacts only, and AGENTS.md prohibits PRs in Milestone 1. |
-
-AMB-01 through AMB-07 remain unresolved. AMB-08 is deferred by user scope. The representative account, proposed catalogue markers and semantic error checks allow a concrete plan without treating those choices as additional requirements.
-
-Username-only, password-only, whitespace-only, other demo accounts, case variants, maximum-length boundaries, repeated attempts, keyboard submission and session persistence are clarification candidates, not approved required scenarios. They were not explored and have no inferred expected outcomes.
-
-## Planner contribution and verification limits
-
-The **Playwright Planner agent** designed/reviewed the four scenarios, acceptance mappings, fresh-state preconditions, failure conditions and ambiguity list using the Jira content and root's browser evidence. Its `planner_setup_page` and `planner_save_plan` tools were unavailable in this session; the root agent performed MCP exploration and created these artifacts. The Planner did not independently explore.
-
-Interactive exploration used Playwright MCP snapshots, DOM inspection, clicks and ephemeral browser snippets. No automated test files, test-run pass counts, commits or PRs were created. The existing seed test was left unchanged. Only the planning deliverables and normalized observations are complete; future automation and execution remain deferred.
+**Expected result:** Unspecified: AC1 explicitly uses clicking Login and does not require Enter-key submission. Record observations; do not assume keyboard submission must occur or apply a pass/fail result without an approved requirement.
