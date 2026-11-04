@@ -32,7 +32,7 @@
       "source": "acceptance_criteria",
       "acceptanceCriteria": ["AC1", "AC2", "AC3"],
       "preconditions": [
-        "A customer session able to access shopping functionality is available; account and setup details must be confirmed before execution.",
+        "A customer session able to access shopping functionality is available; the setup method must be verified before execution.",
         "The cart is empty and an available product A has been identified. Product names and UI controls have not been verified in this analysis."
       ],
       "steps": [
@@ -75,7 +75,7 @@
         "Open the cart page using the application's supported navigation.",
         "Compare the displayed products with the identities of products A and B."
       ],
-      "expectedResult": "Both added products A and B are visible on the cart page. AC3 does not prescribe additional assertions about prices, images, ordering, or other product details.",
+      "expectedResult": "Both added products A and B are visible on the cart page.",
       "priority": "medium"
     },
     {
@@ -89,7 +89,7 @@
         "The cart contains only distinct products A and B, each added once."
       ],
       "steps": [
-        "Remove product A using the application's supported removal action; the required removal location needs clarification.",
+        "Remove product A using the application's supported removal action.",
         "View the cart page and inspect the products present."
       ],
       "expectedResult": "Product A is no longer in the cart. Product B remains visible on the cart page.",
@@ -151,7 +151,6 @@
     }
   ],
   "ambiguities": [
-    
   ],
   "status": "ready"
 }
