@@ -10,7 +10,7 @@ Application: https://www.saucedemo.com/
 - **AC2:** The cart badge updates to show the number of items.
 - **AC3:** The user can view added products on the cart page.
 - **AC4:** The user can remove a product from the cart.
-- **AC5:** The cart badge reflects the updated item count.
+- **AC5:** When a user removes a product from the shopping cart: if other products remain, the cart badge displays the number of remaining products; if the last product is removed, the cart badge disappears; the removed product must no longer appear in the cart.
 
 ## Test Scenarios
 
@@ -47,6 +47,7 @@ Application: https://www.saucedemo.com/
 **Steps**
 1. Add product B to the cart using the application's supported action.
 2. Inspect the cart badge.
+3. Open the cart page and confirm product B is present.
 
 **Expected result:** Product B is added to the cart and the badge shows an item count of 2.
 
@@ -71,7 +72,7 @@ Application: https://www.saucedemo.com/
 
 - Type: positive
 - Source: acceptance_criteria
-- ACs: AC3, AC4
+- ACs: AC3, AC4, AC5
 - Priority: medium
 
 **Preconditions**
@@ -98,10 +99,11 @@ Application: https://www.saucedemo.com/
 **Steps**
 1. Remove product A using the application's supported removal action.
 2. Inspect the cart badge.
+3. View the cart page and confirm product A is no longer present.
 
-**Expected result:** Product A is removed and the cart badge reflects the remaining item count of 1.
+**Expected result:** Product A no longer appears in the cart and the cart badge displays the remaining product count of 1.
 
-### SCRUM-2-S06: Remove the last product and inspect the empty-cart badge state
+### SCRUM-2-S06: Remove the last product and verify the cart badge disappears
 
 - Type: boundary
 - Source: acceptance_criteria
@@ -115,25 +117,6 @@ Application: https://www.saucedemo.com/
 **Steps**
 1. Remove product A using the application's supported removal action.
 2. View the cart page to confirm product A is no longer present.
-3. Inspect the cart badge state after removal.
+3. Verify that the cart badge has disappeared after removal.
 
-**Expected result:** Product A is removed and the cart has no products. AC5 requires the badge to reflect the updated item count, now zero, but does not specify whether to display 0 or hide the badge. The badge assertion is blocked pending clarification; no empty-cart message is prescribed.
-
-### SCRUM-2-P01: Proposed: attempt to add the same product again
-
-- Type: edge
-- Source: proposed
-- ACs: AC1, AC2, AC3
-- Priority: low
-
-**Preconditions**
-- A customer session able to access shopping functionality is available.
-- The cart contains only product A, added once.
-- Repeat-add availability and duplicate-product behavior are unspecified.
-
-**Steps**
-1. Inspect whether the application offers an action to add product A again; do not assume such an action exists or bypass the UI.
-2. If a repeat-add action is available, use it once and record the cart contents and badge state.
-3. Record observations for requirements clarification without assigning a pass/fail outcome.
-
-**Expected result:** Unspecified: SCRUM-2 does not define whether repeat addition is available, prevented, or represented as duplicate entries or increased quantity, nor how such additions affect the badge. This proposal requires approved scope and expected behavior before becoming a pass/fail test.
+**Expected result:** Product A no longer appears in the cart, the cart has no products, and the cart badge disappears.
