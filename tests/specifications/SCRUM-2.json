@@ -1,0 +1,156 @@
+{
+  "jiraKey": "SCRUM-2",
+  "summary": "Test Shopping Cart Functionality",
+  "applicationUrl": "https://www.saucedemo.com/",
+  "acceptanceCriteria": [
+    {
+      "id": "AC1",
+      "description": "The user can add a product to the cart."
+    },
+    {
+      "id": "AC2",
+      "description": "The cart badge updates to show the number of items."
+    },
+    {
+      "id": "AC3",
+      "description": "The user can view added products on the cart page."
+    },
+    {
+      "id": "AC4",
+      "description": "The user can remove a product from the cart."
+    },
+    {
+      "id": "AC5",
+      "description": "The cart badge reflects the updated item count."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SCRUM-2-S01",
+      "title": "Add the first product to an empty cart",
+      "type": "boundary",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC1", "AC2", "AC3"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available; the setup method must be verified before execution.",
+        "The cart is empty and an available product A has been identified. Product names and UI controls have not been verified in this analysis."
+      ],
+      "steps": [
+        "Add product A to the cart using the application's supported action.",
+        "Inspect the cart badge.",
+        "Open the cart page and inspect its products."
+      ],
+      "expectedResult": "Product A is added and is visible on the cart page. The cart badge shows an item count of 1.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-S02",
+      "title": "Adding a second distinct product increases the badge count",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC1", "AC2"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "The cart contains only product A, added once, and the badge shows 1.",
+        "A distinct available product B has been identified."
+      ],
+      "steps": [
+        "Add product B to the cart using the application's supported action.",
+        "Inspect the cart badge."
+      ],
+      "expectedResult": "Product B is added to the cart and the badge shows an item count of 2.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-S03",
+      "title": "View multiple added products on the cart page",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC3"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "Two distinct products A and B have each been added once to an initially empty cart. Their identities were recorded when selected."
+      ],
+      "steps": [
+        "Open the cart page using the application's supported navigation.",
+        "Compare the displayed products with the identities of products A and B."
+      ],
+      "expectedResult": "Both added products A and B are visible on the cart page.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-S04",
+      "title": "Remove one product while another remains in the cart",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC3", "AC4"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "The cart contains only distinct products A and B, each added once."
+      ],
+      "steps": [
+        "Remove product A using the application's supported removal action.",
+        "View the cart page and inspect the products present."
+      ],
+      "expectedResult": "Product A is no longer in the cart. Product B remains visible on the cart page.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-S05",
+      "title": "Removing one of two products decreases the badge count",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC4", "AC5"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "The cart contains only distinct products A and B, each added once, and the badge shows 2."
+      ],
+      "steps": [
+        "Remove product A using the application's supported removal action.",
+        "Inspect the cart badge."
+      ],
+      "expectedResult": "Product A is removed and the cart badge reflects the remaining item count of 1.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-S06",
+      "title": "Remove the last product and inspect the empty-cart badge state",
+      "type": "boundary",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC4", "AC5"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "The cart contains only product A, added once, and the badge shows 1."
+      ],
+      "steps": [
+        "Remove product A using the application's supported removal action.",
+        "View the cart page to confirm product A is no longer present.",
+        "Inspect the cart badge state after removal."
+      ],
+      "expectedResult": "Product A is removed and the cart has no products. AC5 requires the badge to reflect the updated item count, now zero, but does not specify whether to display 0 or hide the badge. The badge assertion is blocked pending clarification; no empty-cart message is prescribed.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-2-P01",
+      "title": "Proposed: attempt to add the same product again",
+      "type": "edge",
+      "source": "proposed",
+      "acceptanceCriteria": ["AC1", "AC2", "AC3"],
+      "preconditions": [
+        "A customer session able to access shopping functionality is available.",
+        "The cart contains only product A, added once.",
+        "Repeat-add availability and duplicate-product behavior are unspecified."
+      ],
+      "steps": [
+        "Inspect whether the application offers an action to add product A again; do not assume such an action exists or bypass the UI.",
+        "If a repeat-add action is available, use it once and record the cart contents and badge state.",
+        "Record observations for requirements clarification without assigning a pass/fail outcome."
+      ],
+      "expectedResult": "Unspecified: SCRUM-2 does not define whether repeat addition is available, prevented, or represented as duplicate entries or increased quantity, nor how such additions affect the badge. This proposal requires approved scope and expected behavior before becoming a pass/fail test.",
+      "priority": "low"
+    }
+  ],
+  "ambiguities": [
+  ],
+  "status": "ready"
+}
