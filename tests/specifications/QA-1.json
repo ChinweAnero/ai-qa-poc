@@ -1,0 +1,208 @@
+{
+  "jiraKey": "SCRUM-1",
+  "summary": "Test SauceDemo User Login",
+  "applicationUrl": "https://www.saucedemo.com",
+  "acceptanceCriteria": [
+    {
+      "id": "AC1",
+      "description": "**AC1 — Successful login**\n\nGiven I am on the SauceDemo login page  \nWhen I enter valid credentials  \nAnd I click Login  \nThen I should be redirected to the inventory page  \nAnd the product catalogue should be visible."
+    },
+    {
+      "id": "AC2",
+      "description": "**AC2 — Invalid password**\n\nGiven I am on the login page  \nWhen I enter a valid username and an invalid password  \nAnd I click Login  \nThen I should remain on the login page  \nAnd an appropriate error message should appear."
+    },
+    {
+      "id": "AC3",
+      "description": "**AC3 — Missing credentials**\n\nGiven I am on the login page  \nWhen I click Login without entering credentials  \nThen I should see a username-required validation message."
+    },
+    {
+      "id": "AC4",
+      "description": "**AC4 — Locked-out user**\n\nGiven I am on the login page  \nWhen I attempt to log in using the provided locked-out demo account  \nThen I should see a locked-out account error."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SCRUM-1-S01",
+      "title": "Successful login displays the product catalogue",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": [
+        "AC1"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.",
+        "A requirement-approved valid account and its valid credentials are available; the account identity and required account coverage need confirmation. Credential values must not be stored in this specification."
+      ],
+      "steps": [
+        "Enter valid credentials.",
+        "Click Login.",
+        "Check the destination and whether the product catalogue is visible."
+      ],
+      "expectedResult": "I should be redirected to the inventory page and the product catalogue should be visible.",
+      "priority": "high"
+    },
+    {
+      "id": "SCRUM-1-S02",
+      "title": "Invalid password is rejected on the login page",
+      "type": "negative",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": [
+        "AC2"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.",
+        "A valid username and a deliberately invalid password are available without persisting their values."
+      ],
+      "steps": [
+        "Enter a valid username and an invalid password.",
+        "Click Login.",
+        "Check whether the login page remains displayed and inspect the error message."
+      ],
+      "expectedResult": "I should remain on the login page and an appropriate error message should appear. The meaning of an appropriate error needs clarification; no exact wording is prescribed.",
+      "priority": "high"
+    },
+    {
+      "id": "SCRUM-1-S03",
+      "title": "Both credentials empty triggers username-required validation",
+      "type": "boundary",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.",
+        "Both username and password fields are empty, with zero characters in each."
+      ],
+      "steps": [
+        "Click Login without entering credentials.",
+        "Inspect the validation message."
+      ],
+      "expectedResult": "I should see a username-required validation message.",
+      "priority": "high"
+    },
+    {
+      "id": "SCRUM-1-S04",
+      "title": "Locked-out demo account displays a locked-account error",
+      "type": "negative",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": [
+        "AC4"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open at https://www.saucedemo.com with no authenticated session.",
+        "The provided locked-out demo account and the credentials needed to attempt login have been identified and confirmed; those details are not supplied in SCRUM-1."
+      ],
+      "steps": [
+        "Attempt to log in using the provided locked-out demo account, with credential and submission details to be confirmed before execution.",
+        "Inspect the resulting error."
+      ],
+      "expectedResult": "I should see a locked-out account error.",
+      "priority": "high"
+    },
+    {
+      "id": "SCRUM-1-P01",
+      "title": "Proposed: submit a valid username with an empty password",
+      "type": "boundary",
+      "source": "proposed",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open with no authenticated session.",
+        "A valid username is available and the password field is empty."
+      ],
+      "steps": [
+        "Enter the valid username and leave the password at zero characters.",
+        "Click Login.",
+        "Record the displayed response and destination for requirements clarification."
+      ],
+      "expectedResult": "Unspecified: AC3 defines the result only when no credentials are entered. Record observations without assigning a pass/fail outcome until the password-only omission requirement is supplied.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-1-P02",
+      "title": "Proposed: submit a password with an empty username",
+      "type": "boundary",
+      "source": "proposed",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open with no authenticated session.",
+        "A demo password is available and the username field is empty."
+      ],
+      "steps": [
+        "Enter the password and leave the username at zero characters.",
+        "Click Login.",
+        "Record the displayed response and destination for requirements clarification."
+      ],
+      "expectedResult": "Unspecified: AC3 does not define the result when only the username is missing. Record observations without assuming that the both-empty validation also applies here.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-1-P03",
+      "title": "Proposed: submit whitespace-only credential fields",
+      "type": "edge",
+      "source": "proposed",
+      "acceptanceCriteria": [
+        "AC3"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open with no authenticated session.",
+        "Whitespace handling has not been specified."
+      ],
+      "steps": [
+        "Enter one space in each credential field.",
+        "Click Login.",
+        "Record the displayed response and destination for requirements clarification."
+      ],
+      "expectedResult": "Unspecified: the requirements do not say whether whitespace is trimmed, treated as missing credentials, or processed as entered. Observe the response without assuming a required error or normalization rule.",
+      "priority": "low"
+    },
+    {
+      "id": "SCRUM-1-P04",
+      "title": "Proposed: correct an invalid password and retry login",
+      "type": "edge",
+      "source": "proposed",
+      "acceptanceCriteria": [
+        "AC1",
+        "AC2"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open with no authenticated session.",
+        "A valid account, its valid credentials, and a deliberately invalid password are available without persisting their values."
+      ],
+      "steps": [
+        "Enter the valid username and invalid password, then click Login.",
+        "Record the error and destination.",
+        "On the login page, replace the invalid password with the valid password and click Login again.",
+        "Record the destination, catalogue visibility, and handling of the prior error."
+      ],
+      "expectedResult": "Exploratory sequence only: AC2 specifies remaining on the login page with an appropriate error for the invalid attempt; AC1 specifies inventory redirection and a visible product catalogue for valid credentials. Whether retrying in the same session is supported and how the previous error is handled are unspecified. Record observations without assigning a pass/fail outcome to these unspecified behaviors.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-1-P05",
+      "title": "Proposed: attempt login with keyboard submission",
+      "type": "edge",
+      "source": "proposed",
+      "acceptanceCriteria": [
+        "AC1"
+      ],
+      "preconditions": [
+        "The SauceDemo login page is open with no authenticated session.",
+        "Valid credentials are available; keyboard submission behavior is not specified."
+      ],
+      "steps": [
+        "Enter valid credentials.",
+        "With focus in the password field, press Enter.",
+        "Record whether submission occurs and the resulting destination and visible content."
+      ],
+      "expectedResult": "Unspecified: AC1 explicitly uses clicking Login and does not require Enter-key submission. Record observations; do not assume keyboard submission must occur or apply a pass/fail result without an approved requirement.",
+      "priority": "low"
+    }
+  ],
+  "ambiguities": [
+  ],
+  "status": "ready"
+}
