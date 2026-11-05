@@ -9,3 +9,4 @@ playwright/.auth/
 .codex/
 .DS_Store
 .log*
+*.log
