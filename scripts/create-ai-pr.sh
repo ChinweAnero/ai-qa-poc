@@ -9,7 +9,7 @@ if [[ ! "$JIRA_KEY" =~ ^[A-Z][A-Z0-9]+-[0-9]+$ ]]; then
   exit 1
 fi
 
-BRANCH="QA-ai-flow-tests/${JIRA_KEY}"
+BRANCH="QA-ai-workflow/${JIRA_KEY}"
 BASE_BRANCH="main"
 SPEC="tests/specifications/${JIRA_KEY}.json"
 PLAN="tests/plans/${JIRA_KEY}.md"
