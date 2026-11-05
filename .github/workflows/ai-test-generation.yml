@@ -1,0 +1,38 @@
+
+name: AI Test Generation
+
+on:
+  repository_dispatch:
+    types: [jira_ready_for_automation]
+  workflow_dispatch:
+    inputs:
+      issue_key:
+        description: Jira issue key
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  receive-jira-event:
+    runs-on: [self-hosted, macOS, ai-qa-generation]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Jira issue
+        env:
+          DISPATCH_ISSUE: ${{ github.event.client_payload.issue_key }}
+          MANUAL_ISSUE: ${{ inputs.issue_key }}
+        shell: bash
+        run: |
+          ISSUE_KEY="${DISPATCH_ISSUE:-$MANUAL_ISSUE}"
+
+          if [[ ! "$ISSUE_KEY" =~ ^[A-Z][A-Z0-9]*-[0-9]+$ ]]; then
+            echo "Invalid Jira issue key"
+            exit 1
+          fi
+
+          echo "Received Jira issue: $ISSUE_KEY"
+          echo "Next: run AI QA orchestration"
