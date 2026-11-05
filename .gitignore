@@ -8,3 +8,4 @@ test-results/
 playwright/.auth/
 .codex/
 .DS_Store
+.log*
