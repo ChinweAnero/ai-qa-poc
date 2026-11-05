@@ -53,8 +53,27 @@ jobs:
           fi
 
           for spec in "${specs[@]}"; do
+            echo "Validating $spec"
+
+            set +e
             npm run validate:spec -- "$spec"
+            result=$?
+            set -e
+
+            case "$result" in
+              0)
+                echo "READY: $spec"
+                ;;
+              2)
+                echo "BLOCKED: $spec (not eligible for generation)"
+                ;;
+              *)
+                echo "INVALID: $spec"
+                exit 1
+                ;;
+            esac
           done
+
 
       - name: Execute Playwright E2E tests
         run: npx playwright test
