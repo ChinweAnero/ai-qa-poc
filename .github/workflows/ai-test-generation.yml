@@ -14,18 +14,25 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ai-qa-generation
+  cancel-in-progress: false
+
 jobs:
-  receive-jira-event:
+  analyse-jira:
     runs-on: [self-hosted, macOS, ai-qa-generation]
+    timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Show Jira issue
+      - name: Validate Jira issue key
+        id: jira
+        shell: bash
         env:
           DISPATCH_ISSUE: ${{ github.event.client_payload.issue_key }}
           MANUAL_ISSUE: ${{ inputs.issue_key }}
-        shell: bash
         run: |
           ISSUE_KEY="${DISPATCH_ISSUE:-$MANUAL_ISSUE}"
 
@@ -34,5 +41,24 @@ jobs:
             exit 1
           fi
 
-          echo "Received Jira issue: $ISSUE_KEY"
-          echo "Next: run AI QA orchestration"
+          echo "issue_key=$ISSUE_KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Analyse Jira requirements
+        env:
+          JIRA_KEY: ${{ steps.jira.outputs.issue_key }}
+        run: |
+          ./scripts/analyse-jira.sh "$JIRA_KEY"
+
+      - name: Upload analysis artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jira-analysis
+          path: |
+            tests/specifications/*.json
+            tests/plans/*.md
+          if-no-files-found: warn
+          retention-days: 7
