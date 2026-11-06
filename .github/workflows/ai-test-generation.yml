@@ -65,14 +65,25 @@ jobs:
         run: |
           ./scripts/generate-tests.sh "$JIRA_KEY"
 
+      - name: Prepare generated artifacts
+        env:
+          JIRA_KEY: ${{ steps.jira.outputs.issue_key }}
+        run: |
+          mkdir -p artifacts/tests/specifications
+          mkdir -p artifacts/tests/plans
+          mkdir -p artifacts/tests/e2e
+          cp "tests/specifications/${JIRA_KEY}.json" \
+             artifacts/tests/specifications/
+          cp "tests/plans/${JIRA_KEY}.md" \
+             artifacts/tests/plans/
+          cp "tests/e2e/${JIRA_KEY}.spec.ts" \
+             artifacts/tests/e2e/
+
       - name: Upload generated artifacts
         uses: actions/upload-artifact@v4
         with:
           name: generated-tests
-          path: |
-            tests/specifications/*.json
-            tests/plans/*.md
-            tests/e2e/*.spec.ts
+          path: artifacts/
           if-no-files-found: error
           retention-days: 7
 
@@ -105,6 +116,33 @@ jobs:
         with:
           name: generated-tests
           path: .
+
+      - name: Inspect downloaded artifacts
+        run: |
+          echo "Current directory:"
+          pwd
+
+          echo "Downloaded files:"
+          find . -maxdepth 5 -type f \
+            \( -name 'SCRUM-5*' -o -name '*.spec.ts' \) \
+            -print
+
+      - name: Verify generated artifacts
+        env:
+          JIRA_KEY: ${{ needs.generate-tests.outputs.issue_key }}
+        run: |
+          for file in \
+            "tests/specifications/${JIRA_KEY}.json" \
+            "tests/plans/${JIRA_KEY}.md" \
+            "tests/e2e/${JIRA_KEY}.spec.ts"
+          do
+            if [[ ! -s "$file" ]]; then
+              echo "ERROR: Missing artifact: $file"
+              exit 1
+            fi
+
+            echo "Found: $file"
+          done
 
       - name: Create draft PR
         env:
