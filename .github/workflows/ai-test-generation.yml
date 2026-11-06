@@ -19,15 +19,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  analyse-jira:
+  generate-tests:
     runs-on: [self-hosted, macOS, ai-qa-generation]
-    timeout-minutes: 45
+    timeout-minutes: 90
+
+    outputs:
+      issue_key: ${{ steps.jira.outputs.issue_key }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Validate Jira issue key
+      - name: Validate Jira key
         id: jira
         shell: bash
         env:
@@ -46,19 +50,87 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Analyse Jira requirements
+      - name: Install browser
+        run: npx playwright install chromium
+
+      - name: Analyse requirements
         env:
           JIRA_KEY: ${{ steps.jira.outputs.issue_key }}
         run: |
           ./scripts/analyse-jira.sh "$JIRA_KEY"
 
-      - name: Upload analysis artifacts
-        if: always()
+      - name: Generate Playwright tests
+        env:
+          JIRA_KEY: ${{ steps.jira.outputs.issue_key }}
+        run: |
+          ./scripts/generate-tests.sh "$JIRA_KEY"
+
+      - name: Upload generated artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jira-analysis
+          name: generated-tests
           path: |
             tests/specifications/*.json
             tests/plans/*.md
-          if-no-files-found: warn
+            tests/e2e/*.spec.ts
+          if-no-files-found: error
           retention-days: 7
+
+  
+  create-pr:
+    needs: generate-tests
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.AI_QA_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AI_QA_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Download generated tests
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-tests
+          path: .
+
+      - name: Create draft PR
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          JIRA_KEY: ${{ needs.generate-tests.outputs.issue_key }}
+        run: |
+          ./scripts/publish-ai-pr.sh "$JIRA_KEY"
+
+      
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download generated artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-tests
+          path: .
+
+      - name: Create draft PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JIRA_KEY: ${{ needs.generate-tests.outputs.issue_key }}
+        run: |
+          ./scripts/publish-ai-pr.sh "$JIRA_KEY"
+
+      - name: Report PR
+        run: |
+          echo "Draft PR: $PR_URL"
