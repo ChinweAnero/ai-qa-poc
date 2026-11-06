@@ -1,0 +1,157 @@
+{
+  "jiraKey": "SCRUM-5",
+  "summary": "Test Product Sorting on the Inventory Page",
+  "applicationUrl": "https://www.saucedemo.com/",
+  "acceptanceCriteria": [
+    {
+      "id": "AC1",
+      "description": "Given the customer has successfully logged in, when the inventory page is displayed, all six inventory products are visible, the sorting dropdown displays Name (A to Z), and products are displayed in ascending alphabetical order by name."
+    },
+    {
+      "id": "AC2",
+      "description": "Given the customer is viewing the inventory page, when the customer selects Name (Z to A) from the sorting dropdown, all six products remain visible, product names are displayed in descending alphabetical order, and the sorting dropdown displays Name (Z to A)."
+    },
+    {
+      "id": "AC3",
+      "description": "Given the customer is viewing the inventory page, when the customer selects Price (low to high), all six products remain visible, product prices are displayed in ascending numerical order, the lowest-priced product appears first, and the sorting dropdown displays Price (low to high)."
+    },
+    {
+      "id": "AC4",
+      "description": "Given the customer is viewing the inventory page, when the customer selects Price (high to low), all six products remain visible, product prices are displayed in descending numerical order, the highest-priced product appears first, and the sorting dropdown displays Price (high to low)."
+    },
+    {
+      "id": "AC5",
+      "description": "Given the customer is viewing the inventory page, when the customer selects Price (high to low) and subsequently selects Name (A to Z), the final product order is ascending alphabetically by name, all six products remain visible, no products are duplicated or removed, and the sorting dropdown displays Name (A to Z)."
+    },
+    {
+      "id": "AC6",
+      "description": "Given the customer has added Sauce Labs Backpack to the shopping cart and the shopping cart badge displays 1, when the customer changes the sorting option to Price (low to high), the inventory products are correctly sorted by ascending price, the shopping cart badge still displays 1, Sauce Labs Backpack remains in the shopping cart, and no additional products are added."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SCRUM-5-S01",
+      "title": "Default inventory order is Name (A to Z) after login",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC1"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart."
+      ],
+      "steps": [
+        "View the inventory page immediately after successful login without changing the sorting option.",
+        "Verify that all six inventory products are visible.",
+        "Verify that the sorting dropdown displays Name (A to Z).",
+        "Extract the displayed product names in their current order and compare them with an independently alphabetically ascending sorted copy; do not hardcode the expected product sequence."
+      ],
+      "expectedResult": "All six inventory products are visible, the sorting dropdown displays Name (A to Z), and the displayed names match their independently computed ascending alphabetical order.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-5-S02",
+      "title": "Sort all inventory products by name from Z to A",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC2"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart.",
+        "The customer is viewing the inventory page with all six inventory products displayed."
+      ],
+      "steps": [
+        "Select Name (Z to A) from the sorting dropdown.",
+        "Verify that the sorting dropdown displays Name (Z to A) and that all six products remain visible.",
+        "Extract the displayed product names in their current order and compare them with an independently alphabetically descending sorted copy; do not hardcode the expected product sequence."
+      ],
+      "expectedResult": "All six products remain visible, the displayed names match their independently computed descending alphabetical order, and the sorting dropdown displays Name (Z to A).",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-5-S03",
+      "title": "Sort inventory prices from low to high with the minimum first",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC3"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart.",
+        "The customer is viewing the inventory page with all six inventory products displayed."
+      ],
+      "steps": [
+        "Select Price (low to high) from the sorting dropdown.",
+        "Verify that the sorting dropdown displays Price (low to high) and that all six products remain visible.",
+        "Extract the displayed product prices in their current order and parse them into numerical values.",
+        "Compare the numerical prices with an independently numerically ascending sorted copy and verify that the first product has the minimum price; do not hardcode the expected price sequence."
+      ],
+      "expectedResult": "All six products remain visible, their prices are in ascending numerical order, the lowest-priced product appears first, and the sorting dropdown displays Price (low to high).",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-5-S04",
+      "title": "Sort inventory prices from high to low with the maximum first",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC4"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart.",
+        "The customer is viewing the inventory page with all six inventory products displayed."
+      ],
+      "steps": [
+        "Select Price (high to low) from the sorting dropdown.",
+        "Verify that the sorting dropdown displays Price (high to low) and that all six products remain visible.",
+        "Extract the displayed product prices in their current order and parse them into numerical values.",
+        "Compare the numerical prices with an independently numerically descending sorted copy and verify that the first product has the maximum price; do not hardcode the expected price sequence."
+      ],
+      "expectedResult": "All six products remain visible, their prices are in descending numerical order, the highest-priced product appears first, and the sorting dropdown displays Price (high to low).",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-5-S05",
+      "title": "Switch from descending price to ascending name without losing or duplicating products",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC4", "AC5"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart.",
+        "The customer is viewing the inventory page with all six inventory products displayed."
+      ],
+      "steps": [
+        "Record the six displayed product names and their occurrence counts before changing the sort option.",
+        "Select Price (high to low) and verify that the dropdown displays Price (high to low).",
+        "Verify that all six products remain visible; parse their prices into numbers and compare their order with an independently numerically descending sorted copy, including the maximum price first.",
+        "Subsequently select Name (A to Z) and verify that the dropdown displays Name (A to Z).",
+        "Verify that all six products remain visible and compare their names with an independently alphabetically ascending sorted copy.",
+        "Compare the final product names and occurrence counts with the recorded initial inventory to detect removed or duplicated products; do not hardcode the expected product or price sequences."
+      ],
+      "expectedResult": "After Price (high to low), prices are in descending numerical order with the highest first and the selected option is displayed. After the subsequent change, the final order is ascending alphabetically by name and the dropdown displays Name (A to Z). All six original products remain visible with no products duplicated or removed.",
+      "priority": "medium"
+    },
+    {
+      "id": "SCRUM-5-S06",
+      "title": "Sorting by ascending price preserves the single backpack in the cart",
+      "type": "positive",
+      "source": "acceptance_criteria",
+      "acceptanceCriteria": ["AC3", "AC6"],
+      "preconditions": [
+        "Run independently in Chromium using the existing test configuration and authentication approach.",
+        "Start a fresh authenticated session as standard_user using the existing configured test credential, with an empty shopping cart.",
+        "The customer is viewing the inventory page with all six inventory products displayed, including Sauce Labs Backpack."
+      ],
+      "steps": [
+        "Add Sauce Labs Backpack to the initially empty shopping cart using the application's supported action and verify that the cart badge displays 1.",
+        "Select Price (low to high) from the inventory sorting dropdown.",
+        "Verify that the dropdown displays Price (low to high) and that all six inventory products remain visible.",
+        "Extract the displayed prices, parse them into numerical values, and compare them with an independently numerically ascending sorted copy; verify that the minimum price appears first without hardcoding the expected price sequence.",
+        "Verify that the shopping cart badge still displays 1.",
+        "Open the shopping cart using the application's supported navigation and verify that it contains only Sauce Labs Backpack, with no additional products; do not complete checkout."
+      ],
+      "expectedResult": "All six inventory products are sorted by ascending numerical price with the lowest-priced product first, and the dropdown displays Price (low to high). The cart badge remains 1, Sauce Labs Backpack remains the only product in the cart, and no additional products are added.",
+      "priority": "medium"
+    }
+  ],
+  "ambiguities": [],
+  "status": "ready"
+}
