@@ -134,3 +134,56 @@ jobs:
       - name: Report PR
         run: |
           echo "Draft PR: $PR_URL"
+
+  
+  report-to-jira:
+    if: always()
+    needs:
+      - generate-tests
+      - create-pr
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report automation result
+        env:
+          JIRA_KEY: ${{ needs.generate-tests.outputs.issue_key }}
+          GENERATION_RESULT: ${{ needs.generate-tests.result }}
+          PR_RESULT: ${{ needs.create-pr.result }}
+          GH_TOKEN: ${{ github.token }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        shell: bash
+        run: |
+          if [[ ! "$JIRA_KEY" =~ ^[A-Z][A-Z0-9]*-[0-9]+$ ]]; then
+            echo "No valid Jira issue key to report."
+            exit 1
+          fi
+
+          if [[ "$GENERATION_RESULT" == "success" &&
+                "$PR_RESULT" == "success" ]]; then
+            RESULT="success"
+
+            PR_URL=$(gh pr list \
+              --head "ai-tests/$JIRA_KEY" \
+              --state open \
+              --json url \
+              --jq '.[0].url // empty')
+
+            if [[ -z "$PR_URL" ]]; then
+              echo "Expected PR was not found."
+              exit 1
+            fi
+          else
+            RESULT="failed"
+            PR_URL=""
+          fi
+
+          ./scripts/report-to-jira.sh \
+            "$JIRA_KEY" "$RESULT" "$PR_URL"
