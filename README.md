@@ -1,5 +1,6 @@
 # AI Driven QA AUTOMATION WORKFLOW
 An Event-driven AI-assisted workflow design to automate requirements analysis, Playwright test generation, and GitHub pull-request creation. 
+
 This is a proof of concept. It connects Jira Cloud → GitHub Actions → OpenAI Codex + Atlassian MCP → Playwright → draft GitHub pull request → Jira feedback. It explores how an SDET can use AI agents to convert testable acceptance criteria into reviewed, executable end-to-end tests while retaining validation gates and human oversight.
 
 It uses a self-hosted Github Runner on masOS.
@@ -9,25 +10,7 @@ This repository is an AI Quality Engineering proof of concept, not a replacement
 
 ## Architecture
 
-flowchart TD
-    A[Jira Cloud story] -->|Transition: Ready for Automation| B[Jira Automation webhook]
-    B -->|repository_dispatch| C[GitHub Actions: AI Test Generation]
-    C --> D[Self-hosted macOS ARM64 runner]
-    D --> E[Codex requirements analyst]
-    E <-->|Atlassian MCP| A
-    E --> F[Validated JSON specification]
-    F --> G[Markdown test plan]
-    G --> H[Codex + Playwright Planner / Generator]
-    H --> I[TypeScript Playwright tests]
-    I --> J{Validation and tests pass?}
-    J -->|No| K[Report blocked / failed]
-    J -->|Yes| L[Upload generated artifacts]
-    L --> M[GitHub Actions: create-pr]
-    M --> N[Draft pull request]
-    N --> O[Independent Playwright CI]
-    O --> P[Human review]
-    K --> Q[Jira feedback]
-    M --> Q
+   ![alt text](image.png)
 
 ## Design Decisions
     _ Generate tests only when the Jira specification is valid and marked ready.
@@ -38,17 +21,17 @@ flowchart TD
     _ Traceability: Links Jira acceptance criteria, generated scenarios, tests, workflow runs, and PRs.
 
 ## Technology Stack
-    | Jira Cloud + Jira Automation | Requirements source of truth also used to trigger events
-    | Atlassian MCP | Jira access from Codex |
-    | OpenAI Codex CLI | Requirements analysis and agent orchestration |
-    | Playwright Planner / Generator | Browser-informed test planning and generation |
-    | TypeScript + Playwright Test | Executable end-to-end tests |
-    | Zod + `tsx` | Specification schema and validation |
-    | GitHub Actions | Orchestration, CI and artifact transfer |
-    | Self-hosted macOS ARM64 runner | Runs Codex, MCP and browser automation |
-    | GitHub App | Scoped credentials for automated branch/PR creation |
-    | Jira REST API | Automation outcome comments |
-    | GitHub CLI (`gh`) | Pull-request operations and workflow inspection |
+    - Jira Cloud + Jira Automation -> Requirements source of truth also used to trigger events
+    - Atlassian MCP -> Jira access from Codex 
+    - OpenAI Codex CLI -> Requirements analysis and agent orchestration 
+    - Playwright Planner / Generator -> Browser-informed test planning and generation 
+    - TypeScript + Playwright Test -> Executable end-to-end tests 
+    - Zod + `tsx` -> Specification schema and validation 
+    - GitHub Actions -> Orchestration, CI and artifact transfer 
+    - Self-hosted macOS ARM64 runner -> Runs Codex, MCP and browser automation 
+    - GitHub App -> Scoped credentials for automated branch/PR creation 
+    - Jira REST API -> Automation outcome comments 
+    - GitHub CLI (`gh`) -> Pull-request operations and workflow inspection 
 
 ## System under Test
  | https://www.saucedemo.com/
@@ -84,14 +67,13 @@ flowchart TD
     GitHub Actions secrets
     Configure under Repository → Settings → Secrets and variables → Actions.
 
-    | Secret | Purpose | Required when |
-    |---|---|---|
-    | `SAUCEDEMO_PASSWORD` | Existing valid SauceDemo test password | Running authentication scenarios such as `SCRUM-6` |
-    | `AI_QA_APP_PRIVATE_KEY` | GitHub App private key | Publishing PRs with a GitHub App |
-    | `AI_QA_APP_ID` or App Client ID | Identifies the GitHub App; match the action version/input | Publishing PRs with a GitHub App |
-    | `JIRA_BASE_URL` | Jira Cloud site URL | Posting Jira results |
-    | `JIRA_EMAIL` | Jira API account email | Basic-auth Jira reporting |
-    | `JIRA_API_TOKEN` | Jira API token | Posting Jira results |
+   
+    - `SAUCEDEMO_PASSWORD` - Existing valid SauceDemo test password for Running authentication scenarios
+    - `AI_QA_APP_PRIVATE_KEY` | GitHub App private key for Publishing PRs with a GitHub App 
+    - `AI_QA_APP_ID` or App Client ID | Identifies the GitHub App; match the action version/input 
+    - `JIRA_BASE_URL` | Jira Cloud site URL 
+    - `JIRA_EMAIL` | Jira API account email for Basic-auth Jira reporting 
+    - `JIRA_API_TOKEN` | Jira API token for Posting Jira results 
 
 ## Environment Variables
     - env: SAUCEDEMO_PASSWORD: ${{ secrets.SAUCEDEMO_PASSWORD }}
@@ -120,23 +102,22 @@ flowchart TD
     https://api.github.com/repos/ChinweAnero/ai-qa-poc/dispatches
 
  - Body: 
-    ...
-    {
-    "event_type": "jira_ready_for_automation",
-    "client_payload": {
-        "issue_key": "{{issue.key}}"
-    }
-    }
-    ...
+        
+        {
+        "event_type": "jira_ready_for_automation",
+        "client_payload": {
+            "issue_key": "{{issue.key}}"
+        }
+        }
+        
     Use a suitably scoped GitHub credential in Jira Automation's hidden Authorization header. 
 
 ## Manual workflow trigger
-   ...
-   gh workflow run ai-test-generation.yml -f issue_key=(your Jira issue key)
-    gh run list --workflow ai-test-generation.yml --limit 5
-    gh run watch 
-    ...
-
+   
+        gh workflow run ai-test-generation.yml -f issue_key=(your Jira issue key)
+        gh run list --workflow ai-test-generation.yml --limit 5
+        gh run watch 
+        
     Should be tested on the main branch. 
 
 ## Pull requests and independent CI
@@ -149,20 +130,16 @@ flowchart TD
 
 ## Running Locally
     1. Analyse a Jira story:
-        ...
+        
         ./scripts/analyse-jira.sh (jira-issue-issue-key)
-        ...
+        
         Expected outputs:
         - tests/specifications/jira-issue-key.json
         - tests/plans/jira-issue-key.md
     2. Validate a specification
-        ...
         npm run validate:spec -- tests/specifications/jira-issue-key.json
-        ...
     3. Generate Playwright tests (after the specification is marked 'Ready')
-        ...
         ./scripts/generate-tests.sh jira-issue-key
-        ...
         Expected output:
         tests/e2e/jira-issue-key.spec.ts
     4. Run checks
@@ -170,12 +147,10 @@ flowchart TD
         npx playwright test tests/e2e/jira-issue-key.spec.ts
 
     - For login scenarios requiring the SauceDemo test credential, enter it without writing it to shell history:
-    ...
     read -rs SAUCEDEMO_PASSWORD
     export SAUCEDEMO_PASSWORD
     echo
     npx playwright test tests/e2e/SCRUM-6.spec.ts
     unset SAUCEDEMO_PASSWORD
-    ...
     
  
